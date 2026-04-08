@@ -141,7 +141,7 @@ footer {
 <body>
 
 <nav>
-    <h2> Ghest-House Esther LodGe</h2>
+    <h2> Guest-House Esther LodGe</h2>
     <ul>
         <li><a href="#">Home</a></li>
         <li><a href="#rooms">Chambres</a></li>
@@ -160,13 +160,13 @@ footer {
 
         <!-- BOOKING FORM (HIDDEN) -->
         <div id="bookingBox">
-            <form id="bookingForm">
-                <input type="text" placeholder="Nom complet" required><br>
-                <input type="email" placeholder="Email" required><br>
-                <input type="date" required><br>
-                <input type="date" required><br>
-                <button type="submit" class="btn">Confirmer</button>
-            </form>
+            <form action=https://formspree.io/f/xaqlkldr method="POST">
+              <input type="text" name="name" placeholder="Nom complet" required><br>
+              <input type="email" name="email" placeholder="Email" required><br>
+             <input type="date" name="checkin" required><br>
+             <input type="date" name="checkout" required><br>
+             <button type="submit" class="btn">Confirmer</button>
+             </form>
         </div>
     </div>
 </div>
@@ -222,16 +222,7 @@ function toggleBooking() {
     }
 }
 
-document.getElementById("bookingForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-    alert("Réservation Confirmée . Merci !");
-
-    // clear after resever 
-    this.reset();
-
-    //hide the booking box after booking 
-    document.getElementById("bookingBox").style.display = "none";
-});</script>
+</script>
 
 </body>
 </html>
