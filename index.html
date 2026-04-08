@@ -160,33 +160,34 @@ footer {
 
         <!-- BOOKING FORM (HIDDEN) -->
          <div id="bookingBox">
-            <form id="bookingForm">
+              <form id="bookingForm" action="https://formspree.io/f/xaqlkldr" method="POST">
+                
+                <input type="text" name="name" placeholder="Nom complet" required><br>
+                <input type="email" name="email" placeholder="Email" required><br>
 
-                <input type="text" id="name" placeholder="Nom complet" required><br>
-                <input type="email" id="email" placeholder="Email" required><br>
-
-                <label>Choisir une chambre:</label><br>
-                <select id="room">
+                <label>Chambre:</label><br>
+                <select id="room" name="room">
                     <option value="120">Standard - $120</option>
                     <option value="200">Deluxe - $200</option>
                     <option value="350">Luxe - $350</option>
                 </select><br>
 
-                <label>Nombre de personnes:</label><br>
-                <input type="number" id="guests" min="1" max="5" required><br>
-
+                
                 <label>Date arrivée:</label><br>
                 <input type="date" id="checkin" required><br>
 
                 <label>Date départ:</label><br>
                 <input type="date" id="checkout" required><br><br>
+                <!-- Hidden inputs for Formspree -->
+                <input type="hidden" id="nights" name="nights">
+                <input type="hidden" id="total" name="total">
 
                 <!-- Redirect after submit -->
                 <input type="hidden" name="_redirect" value="thankyou.html">
 
                 <button type="submit" class="btn">Confirmer</button>
-
             </form>
+        </div>
         </div>
     </div>
 </div>
@@ -238,6 +239,7 @@ function toggleBooking() {
     box.style.display = (box.style.display === "block") ? "none" : "block";
 }
 
+// Calculate nights and total before submit
 document.getElementById("bookingForm").addEventListener("submit", function() {
 
     const roomPrice = parseInt(document.getElementById("room").value);
@@ -248,24 +250,16 @@ document.getElementById("bookingForm").addEventListener("submit", function() {
 
     if (nights <= 0) {
         alert("Dates invalides !");
-        event.preventDefault(); // stop sending
-        return;
+        return false; // stop submit if invalid
     }
 
     const total = nights * roomPrice;
 
-    // put values into hidden inputs
     document.getElementById("nights").value = nights;
     document.getElementById("total").value = "$" + total;
 
-    alert("Réservation envoyée ✅ Total: $" + total);
-
-    setTimeout(() => {
-        document.getElementById("bookingBox").style.display = "none";
-    }, 1000);
+    // Formspree will handle the redirect
 });
-
-
 </script>
 </body>
 </html>
