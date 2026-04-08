@@ -159,14 +159,31 @@ footer {
         <button class="btn" onclick="toggleBooking()">Book Maintenant</button>
 
         <!-- BOOKING FORM (HIDDEN) -->
-        <div id="bookingBox">
-            <form id="bookingForm" action="https://formspree.io/f/xaqlkldr" method="POST">
-              <input type="text" name="name" placeholder="Nom complet" required><br>
-              <input type="email" name="email" placeholder="Email" required><br>
-             <input type="date" name="checkin" required><br>
-             <input type="date" name="checkout" required><br>
-             <button type="submit" class="btn">Confirmer</button>
-             </form>
+         <div id="bookingBox">
+            <form id="bookingForm">
+
+                <input type="text" id="name" placeholder="Nom complet" required><br>
+                <input type="email" id="email" placeholder="Email" required><br>
+
+                <label>Choisir une chambre:</label><br>
+                <select id="room">
+                    <option value="120">Standard - $120</option>
+                    <option value="200">Deluxe - $200</option>
+                    <option value="350">Luxe - $350</option>
+                </select><br>
+
+                <label>Nombre de personnes:</label><br>
+                <input type="number" id="guests" min="1" max="5" required><br>
+
+                <label>Date arrivée:</label><br>
+                <input type="date" id="checkin" required><br>
+
+                <label>Date départ:</label><br>
+                <input type="date" id="checkout" required><br><br>
+
+                <button type="submit" class="btn">Confirmer</button>
+            </form>
+        
 
              <p id="successMessage">✅ Réservation confirmée!</p>
         </div>
@@ -180,19 +197,19 @@ footer {
         <div class="room">
             <img src="room1.jpg">
             <h3>Chambre Standard </h3>
-            <p>$120 Par Nuit & Night </p>
+            
         </div>
 
         <div class="room">
             <img src="room2.jpg">
             <h3>Chambre Deluxe </h3>
-            <p>$200 Par Nuit & Night </p>
+            
         </div>
 
         <div class="room">
             <img src="room3.jpg">
             <h3>Chambre luxe</h3>
-            <p>$350 Par Nuit & Night </p>
+            
         </div>
 
     </div>
@@ -200,7 +217,7 @@ footer {
 
 <section class="about" id="about">
     <h2>A Propos de Nous </h2>
-    <p>Situé au cœur de Kolwezi, notre hôtel offre le luxe, confort et un service de première classe.</p>
+    <p>Situé au cœur de Kolwezi, notre hôtel offre le luxe, confort et un service de première class.</p>
 </section>
 
 <section class="contact" id="contact">
@@ -213,39 +230,51 @@ footer {
     <p>© Esther LodGe</p>
 </footer>
 <!-- JAVASCRIPT -->
+
 <script>
 function toggleBooking() {
     const box = document.getElementById("bookingBox");
     box.style.display = (box.style.display === "block") ? "none" : "block";
 }
-//HANDLE FORM SUBMISSION
-document.getElementById("bookingForm").addEventListener("submit",async function(e) {
-    e.preventDefault(); // Prevent default form submission
 
-    const form = e.target;
-    const data = new FormData(form);
+document.getElementById("bookingForm").addEventListener("submit", function(e) {
+    e.preventDefault();
 
-    //send to Formspree
-   await fetch(form.action, {
-        method: "POST",
-        body: data,
-        headers: { 'Accept': 'application/json' }
-    });
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const roomPrice = parseInt(document.getElementById("room").value);
+    const guests = document.getElementById("guests").value;
+    const checkin = new Date(document.getElementById("checkin").value);
+    const checkout = new Date(document.getElementById("checkout").value);
 
-    // CLEAR FORM
-    form.reset();
+    // Calculate number of nights
+    const timeDiff = checkout - checkin;
+    const nights = timeDiff / (1000 * 3600 * 24);
 
-    // SHOW MESSAGE
-    document.getElementById("successMessage").style.display = "block";
+    if (nights <= 0) {
+        alert("Dates invalides !");
+        return;
+    }
 
-    // HIDE AFTER 2s
-    setTimeout(() => {
-        document.getElementById("bookingBox").style.display = "none";
-        document.getElementById("successMessage").style.display = "none";
-    }, 2000);
+    // Total price
+    const total = nights * roomPrice;
+
+    // Show summary
+    document.getElementById("summary").innerHTML = `
+        <h3>Résumé de réservation</h3>
+        <p><strong>Nom:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Personnes:</strong> ${guests}</p>
+        <p><strong>Nombre de nuits:</strong> ${nights}</p>
+        <p><strong>Total:</strong> $${total}</p>
+    `;
+
+    // Save (localStorage)
+    localStorage.setItem("booking", JSON.stringify({
+        name, email, guests, nights, total
+    }));
 });
 
 </script>
-
 </body>
 </html>
