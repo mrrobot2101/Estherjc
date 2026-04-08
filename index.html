@@ -181,11 +181,12 @@ footer {
                 <label>Date départ:</label><br>
                 <input type="date" id="checkout" required><br><br>
 
-                <button type="submit" class="btn">Confirmer</button>
-            </form>
-        
+                <!-- Redirect after submit -->
+                <input type="hidden" name="_redirect" value="thankyou.html">
 
-             <p id="successMessage">✅ Réservation confirmée!</p>
+                <button type="submit" class="btn">Confirmer</button>
+
+            </form>
         </div>
     </div>
 </div>
@@ -237,43 +238,33 @@ function toggleBooking() {
     box.style.display = (box.style.display === "block") ? "none" : "block";
 }
 
-document.getElementById("bookingForm").addEventListener("submit", function(e) {
-    e.preventDefault();
+document.getElementById("bookingForm").addEventListener("submit", function() {
 
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
     const roomPrice = parseInt(document.getElementById("room").value);
-    const guests = document.getElementById("guests").value;
     const checkin = new Date(document.getElementById("checkin").value);
     const checkout = new Date(document.getElementById("checkout").value);
 
-    // Calculate number of nights
-    const timeDiff = checkout - checkin;
-    const nights = timeDiff / (1000 * 3600 * 24);
+    const nights = (checkout - checkin) / (1000 * 3600 * 24);
 
     if (nights <= 0) {
         alert("Dates invalides !");
+        event.preventDefault(); // stop sending
         return;
     }
 
-    // Total price
     const total = nights * roomPrice;
 
-    // Show summary
-    document.getElementById("summary").innerHTML = `
-        <h3>Résumé de réservation</h3>
-        <p><strong>Nom:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Personnes:</strong> ${guests}</p>
-        <p><strong>Nombre de nuits:</strong> ${nights}</p>
-        <p><strong>Total:</strong> $${total}</p>
-    `;
+    // put values into hidden inputs
+    document.getElementById("nights").value = nights;
+    document.getElementById("total").value = "$" + total;
 
-    // Save (localStorage)
-    localStorage.setItem("booking", JSON.stringify({
-        name, email, guests, nights, total
-    }));
+    alert("Réservation envoyée ✅ Total: $" + total);
+
+    setTimeout(() => {
+        document.getElementById("bookingBox").style.display = "none";
+    }, 1000);
 });
+
 
 </script>
 </body>
