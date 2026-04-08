@@ -224,7 +224,13 @@ function toggleBooking() {
 
 document.getElementById("bookingForm").addEventListener("submit", function(e) {
     e.preventDefault();
-    alert("Réservation envoyée . Mercie !");
+    alert("Réservation Confirmée . Merci !");
+
+    // clear after resever 
+    this.reset();
+
+    //hide the booking box after booking 
+    document.getElementById("bookingBox").style.display = "none";
 });</script>
 
 </body>
